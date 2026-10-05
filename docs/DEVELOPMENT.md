@@ -32,7 +32,7 @@
 
 `package.ps1` 使用白名单复制程序、自启动脚本和使用文档，再生成 ZIP 与 SHA-256 校验文件。它不遍历或打包用户数据目录。
 
-GitHub 的 Windows 工作流使用相同的测试和打包脚本。首次上传后，应以实际 Actions 运行结果确认云端环境；本机通过不代表云端已经运行。
+GitHub 的 Windows 工作流在推送和拉取请求时运行测试、构建并上传程序包，结果可在仓库的 Actions 页面查看。
 
 工作流中的操作及参数参考 [checkout](https://github.com/actions/checkout) 和 [upload-artifact](https://github.com/actions/upload-artifact) 的官方说明，使用已确认的 v7 标签对应提交，避免标签变动影响复现。
 
@@ -47,6 +47,8 @@ GitHub 的 Windows 工作流使用相同的测试和打包脚本。首次上传�
 ```
 
 工具只生成虚构计划和小记，不读取 `data/plans.json`，也不截图用户桌面。输出为 `docs/images/widget.png` 和 `docs/images/journal.png`。
+
+内置图片来源见 [资源说明](../assets/README.md)；版本变化见 [更新记录](../CHANGELOG.md)，参与修改见 [贡献说明](../CONTRIBUTING.md)。
 
 ## 提交前
 

@@ -30,3 +30,7 @@ Desktop.ini
 
 # Screenshots pasted during development
 codex-clipboard-*.png
+
+# Unused local calligraphy drafts
+/assets/weekly-self-renewal-v1.png
+/assets/weekly-self-renewal-v2.png
