@@ -1,0 +1,32 @@
+# Local plans, journals, preferences, backgrounds and recovery copies
+/data/
+**/plans.json
+**/plans.json.*
+*.bak
+*.tmp
+
+# Generated binaries, packages and private layout previews
+/output/
+/dist/
+*.exe
+*.dll
+*.pdb
+*.zip
+/tests/store-test-data-*/
+/tests/ui-integration-data/
+
+# Local editor and agent files
+/.vs/
+/.vscode/
+/.idea/
+/.codex/
+/.agents/
+/AGENTS.md
+/STUDY_ROADMAP.md
+.env
+.env.*
+Thumbs.db
+Desktop.ini
+
+# Screenshots pasted during development
+codex-clipboard-*.png

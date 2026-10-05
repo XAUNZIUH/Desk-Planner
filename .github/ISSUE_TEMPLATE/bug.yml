@@ -1,0 +1,27 @@
+name: 问题反馈
+description: 报告一个可以复现的问题
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: 当前行为是什么？期望是什么？
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 使用虚构内容说明步骤，请勿上传个人计划或日记。
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 环境
+      placeholder: Windows 11，DeskPlanner v1.0.0
+  - type: textarea
+    id: error
+    attributes:
+      label: 错误提示或演示图
+      description: 截图前请移除个人内容和本地路径。

@@ -1,0 +1,68 @@
+name: Windows build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Publish the version in VERSION after tests pass
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Run storage and hidden WPF tests
+        run: .\tests\run-tests.ps1
+      - name: Build a package without personal data
+        run: .\package.ps1
+      - name: Upload Windows package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: DeskPlanner-Windows
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    needs: windows
+    if: >-
+      (github.event_name == 'push' && contains(github.event.head_commit.message, '[release]')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish_release)
+    runs-on: windows-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Build a clean release package
+        run: .\package.ps1
+      - name: Publish Windows release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $releaseVersion = (Get-Content -LiteralPath VERSION -Raw).Trim()
+          if ($releaseVersion -notmatch '^\d+\.\d+\.\d+$') { throw 'VERSION must contain a semantic version.' }
+          $releaseFiles = @(Get-ChildItem -LiteralPath dist -File | Where-Object { $_.Name.EndsWith('.zip') -or $_.Name.EndsWith('.sha256') } | ForEach-Object { $_.FullName })
+          gh release create ('v' + $releaseVersion) @releaseFiles --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title ('DeskPlanner v' + $releaseVersion) --notes-file RELEASE_NOTES.md
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed.' }
